@@ -52,20 +52,23 @@ function PageLoader() {
 }
 
 function ProtectedRoute({ children, navigate }: { children: ReactNode; navigate: (p: string) => void }) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
   useEffect(() => {
-    if (!isAuthenticated) navigate('/login');
-  }, [isAuthenticated, navigate]);
+    if (!loading && !isAuthenticated) navigate('/login');
+  }, [isAuthenticated, loading, navigate]);
+  if (loading) return <PageLoader />;
   if (!isAuthenticated) return null;
   return <>{children}</>;
 }
 
 function AdminRoute({ children, navigate }: { children: ReactNode; navigate: (p: string) => void }) {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, loading } = useAuth();
   useEffect(() => {
+    if (loading) return;
     if (!isAuthenticated) navigate('/login');
     else if (user?.role !== 'admin') navigate('/dashboard');
-  }, [isAuthenticated, user, navigate]);
+  }, [isAuthenticated, user, loading, navigate]);
+  if (loading) return <PageLoader />;
   if (!isAuthenticated || user?.role !== 'admin') return null;
   return <>{children}</>;
 }

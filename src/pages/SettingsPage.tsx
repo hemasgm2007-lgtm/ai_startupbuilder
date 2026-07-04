@@ -44,8 +44,8 @@ export function SettingsPage({ onNavigate }: SettingsPageProps) {
   const [creativity, setCreativity] = useState(70);
   const [apiKey] = useState('sk-asb-' + Math.random().toString(36).slice(2, 18));
 
-  const handleSave = () => {
-    updateUser({ name, email, bio });
+  const handleSave = async () => {
+    await updateUser({ name, email, bio });
     showToast('success', 'Settings saved successfully.');
   };
 

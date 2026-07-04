@@ -33,8 +33,8 @@ export function DashboardLayout({ children, onNavigate, currentPath }: Dashboard
     ? [...NAV_ITEMS, { label: 'Admin Panel', icon: Shield, path: '/admin' }]
     : NAV_ITEMS;
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     showToast('info', 'You have been signed out.');
     onNavigate('/');
   };

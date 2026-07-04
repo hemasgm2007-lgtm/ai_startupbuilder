@@ -68,11 +68,16 @@ export function WizardPage({ onNavigate }: WizardPageProps) {
     await new Promise((r) => setTimeout(r, 2800));
     clearInterval(interval);
     const project = createProjectFromWizard(data);
-    addProject(project);
-    setCurrentProjectId(project.id);
-    setGenerating(false);
-    showToast('success', 'Your business plan is ready!');
-    onNavigate('/results');
+    const saved = await addProject(project);
+    if (saved) {
+      setCurrentProjectId(saved.id);
+      setGenerating(false);
+      showToast('success', 'Your business plan is ready!');
+      onNavigate('/results');
+    } else {
+      setGenerating(false);
+      showToast('error', 'Failed to save project. Please try again.');
+    }
   };
 
   const toggleBusinessModel = (model: BusinessModel) => {

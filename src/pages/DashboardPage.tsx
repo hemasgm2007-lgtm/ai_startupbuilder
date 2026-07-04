@@ -29,7 +29,7 @@ const ACTIVITY_ICONS = {
 export function DashboardPage({ onNavigate }: DashboardPageProps) {
   const { user } = useAuth();
   const { showToast } = useToast();
-  const { projects, deleteProject, resetWizard, setCurrentProjectId } = useWizard();
+  const { projects, projectsLoading, deleteProject, resetWizard, setCurrentProjectId } = useWizard();
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
   // Mock usage stats
@@ -47,9 +47,9 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
     onNavigate('/results');
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (deleteId) {
-      deleteProject(deleteId);
+      await deleteProject(deleteId);
       showToast('success', 'Project deleted.');
     }
     setDeleteId(null);
@@ -171,7 +171,18 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
           </Button>
         </div>
 
-        {projects.length === 0 ? (
+        {projectsLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 space-y-4">
+                <div className="skeleton h-12 w-12 rounded-xl" />
+                <div className="skeleton h-5 w-2/3 rounded" />
+                <div className="skeleton h-4 w-1/3 rounded" />
+                <div className="skeleton h-10 w-full rounded-xl" />
+              </div>
+            ))}
+          </div>
+        ) : projects.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900">
             <EmptyState
               icon={<FolderPlus className="h-8 w-8" />}
